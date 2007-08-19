@@ -14,6 +14,7 @@ Source0:	http://www.blathersource.org/download.php/pyicq-t/pyicq-t-%{version}.ta
 # Source0-md5:	eb44605d5f952759e3cba19815d367d2
 Source1:	%{name}-config.xml
 Source2:	%{name}.init
+Source3:	pyicqt.sh
 URL:		http://www.blathersource.org/
 BuildRequires:	python
 BuildRequires:	rpm-pythonprov
@@ -40,6 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/{%{_datadir}/pyicqt/src/{twistfix/words/{xish/,protocols/jabber/},legacy/services/,langs/,tlib/,services/,xdb/,web/},%{_var}/lib/pyicqt}
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/{jabber,init.d}
 install -d $RPM_BUILD_ROOT/%{_datadir}/pyicqt/data/www/{css,images}
+install -d $RPM_BUILD_ROOT/%{_sbindir}/
 install src/twistfix/*.py $RPM_BUILD_ROOT/%{_datadir}/pyicqt/src/twistfix/
 install src/twistfix/words/*.py $RPM_BUILD_ROOT/%{_datadir}/pyicqt/src/twistfix/words/
 install src/twistfix/words/xish/*.py $RPM_BUILD_ROOT/%{_datadir}/pyicqt/src/twistfix/words/xish/
@@ -61,6 +63,7 @@ install PyICQt.py $RPM_BUILD_ROOT/%{_datadir}/pyicqt/
 
 install %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/jabber/PyICQt.xml
 install %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/init.d/PyICQt
+install %{SOURCE3} $RPM_BUILD_ROOT/%{_sbindir}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -133,3 +136,4 @@ rm -f %{py_sitedir}/twisted/xish
 %dir %{_var}/lib/pyicqt
 %attr(755,root,root) %{_sysconfdir}/init.d/PyICQt
 %attr(640,root,jabber) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/jabber/PyICQt.xml
+%attr(755,root,root) %{_sbindir}/*.sh
