@@ -13,7 +13,7 @@
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
-		msg_network_down PyICQt
+		msg_network_down pyICQt
 		exit 1
 	fi
 else
@@ -27,7 +27,7 @@ case "$1" in
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/PyICQt ]; then
 		msg_starting "Jabber ICQ transport"
-		daemon /usr/share/pyicqt/PyICQt.py -c /etc/jabber/PyICQt.xml
+		daemon /usr/sbin/pyicqt.sh /etc/jabber/PyICQt.xml
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/PyICQt
 	else
