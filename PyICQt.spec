@@ -1,11 +1,11 @@
 #
 # TODO:
 # - summary and description (both),
-# ATTENTION! AHTUNG!
+# ATTENTION! ACHTUNG!
 # - SNAPSHOT VERSION!
 
 Summary:	Python ICQ jabber transport
-Summary(pl.UTF-8):	Python ICQ jabber transport
+Summary(pl.UTF-8):	Transport ICQ dla jabbera napisany w pythonie
 Name:		PyICQt
 Version:	0.8a
 Release:	0.1
@@ -34,8 +34,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %prep
 %setup -q -n pyicq-t-%{version}
-
-%build
 
 %install
 rm -rf $RPM_BUILD_ROOT
