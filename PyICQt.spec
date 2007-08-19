@@ -1,19 +1,19 @@
 #
 # TODO:
-# - summary and description (both),
-# ATTENTION! ACHTUNG!
-# - SNAPSHOT VERSION!
+# - i suppose that workaround for python Twisted is also needed - goto workaround and think about it
+# - description (both),
 
 Summary:	Python ICQ jabber transport
 Summary(pl.UTF-8):	Transport ICQ dla jabbera napisany w pythonie
 Name:		PyICQt
 Version:	0.8a
 Release:	0.1
-Epoch:		1
 License:	GPL
 Group:		Applications/Communications
 Source0:	http://www.blathersource.org/download.php/pyicq-t/pyicq-t-%{version}.tar.gz
 # Source0-md5:	eb44605d5f952759e3cba19815d367d2
+Source1:	%{name}-config.xml
+Source2:	%{name}.init
 URL:		http://www.blathersource.org/
 BuildRequires:	python
 BuildRequires:	rpm-pythonprov
@@ -59,16 +59,16 @@ install data/www/*.html $RPM_BUILD_ROOT/%{_datadir}/pyicqt/data/www/
 install data/*.png $RPM_BUILD_ROOT/%{_datadir}/pyicqt/data/
 install PyICQt.py $RPM_BUILD_ROOT/%{_datadir}/pyicqt/
 
-#install %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/jabber/PyICQt.xml
-#install %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/init.d/PyICQt
+install %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/jabber/PyICQt.xml
+install %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/init.d/PyICQt
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 #ugly workaround (maybe fix in twisted words/xish package?)
 %post
-#ln -s %{py_sitescriptdir}/twisted/words/ %{py_sitedir}/twisted/words
-#ln -s %{py_sitescriptdir}/twisted/xish/ %{py_sitedir}/twisted/xish
+ln -s %{py_sitescriptdir}/twisted/words/ %{py_sitedir}/twisted/words
+ln -s %{py_sitescriptdir}/twisted/xish/ %{py_sitedir}/twisted/xish
 
 if [ -f %{_sysconfdir}/jabber/secret ] ; then
         SECRET=`cat %{_sysconfdir}/jabber/secret`
@@ -87,9 +87,9 @@ if [ "$1" = "0" ]; then
 fi
 
 %postun
-#echo "Cleaing ugly workaround (%{py_sitedir}/twisted/{words,xish})"
-#rm -f %{py_sitedir}/twisted/words
-#rm -f %{py_sitedir}/twisted/xish
+echo "Cleaing ugly workaround (%{py_sitedir}/twisted/{words,xish})"
+rm -f %{py_sitedir}/twisted/words
+rm -f %{py_sitedir}/twisted/xish
 
 %files
 %defattr(644,root,root,755)
@@ -131,7 +131,5 @@ fi
 %dir %{_datadir}/pyicqt
 %attr(755,root,root) %{_datadir}/pyicqt/*.py
 %dir %{_var}/lib/pyicqt
-%dir %{_sysconfdir}/init.d/
-#%attr(755,root,root) %{_sysconfdir}/init.d/PyICQt
-%dir %{_sysconfdir}/jabber/
-#%attr(640,root,jabber) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/jabber/PyICQt.xml
+%attr(755,root,root) %{_sysconfdir}/init.d/PyICQt
+%attr(640,root,jabber) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/jabber/PyICQt.xml
