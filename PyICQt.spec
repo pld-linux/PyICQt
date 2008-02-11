@@ -3,18 +3,19 @@
 # - i suppose that workaround for python Twisted is also needed - goto workaround and think about it
 # - description (both),
 
+%bcond_with ugly  # enable ugly workaround for python Twisted (see above)
+
 Summary:	Python ICQ Jabber transport
 Summary(pl.UTF-8):	Transport ICQ dla Jabbera napisany w Pythonie
 Name:		PyICQt
-Version:	0.8a
+Version:	0.8b
 Release:	0.1
 License:	GPL v2
 Group:		Applications/Communications
-Source0:	http://www.blathersource.org/download.php/pyicq-t/pyicq-t-%{version}.tar.gz
-# Source0-md5:	eb44605d5f952759e3cba19815d367d2
+Source0:	http://pyicqt.googlecode.com/files/pyicq-t-%{version}.tar.gz
+# Source0-md5:	961952be1f88d0b97bc7cc36c75d1215
 Source1:	%{name}-config.xml
 Source2:	%{name}.init
-Source3:	pyicqt.sh
 URL:		http://www.blathersource.org/
 BuildRequires:	python
 BuildRequires:	rpm-pythonprov
@@ -43,7 +44,6 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_datadir}/pyicqt/src/{twistfix/words/{xish,protocols/jabber},legacy/services,langs,tlib,services,xdb,web},%{_var}/lib/pyicqt}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/jabber,/etc/rc.d/init.d}
 install -d $RPM_BUILD_ROOT%{_datadir}/pyicqt/data/www/{css,images}
-install -d $RPM_BUILD_ROOT%{_sbindir}
 install src/twistfix/*.py $RPM_BUILD_ROOT%{_datadir}/pyicqt/src/twistfix
 install src/twistfix/words/*.py $RPM_BUILD_ROOT%{_datadir}/pyicqt/src/twistfix/words
 install src/twistfix/words/xish/*.py $RPM_BUILD_ROOT%{_datadir}/pyicqt/src/twistfix/words/xish
@@ -65,15 +65,17 @@ install PyICQt.py $RPM_BUILD_ROOT%{_datadir}/pyicqt
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/jabber/PyICQt.xml
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/PyICQt
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
+
+%if %{with ugly}
 #ugly workaround (FIX this or twisted words/xish package to work without hacks)
-#ln -s %{py_sitescriptdir}/twisted/words/ %{py_sitedir}/twisted/words
-#ln -s %{py_sitescriptdir}/twisted/xish/ %{py_sitedir}/twisted/xish
+ln -s %{py_sitescriptdir}/twisted/words/ %{py_sitedir}/twisted/words
+ln -s %{py_sitescriptdir}/twisted/xish/ %{py_sitedir}/twisted/xish
+%endif
 
 if [ -f %{_sysconfdir}/jabber/secret ] ; then
 	SECRET=`cat %{_sysconfdir}/jabber/secret`
@@ -91,10 +93,12 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del PyICQt
 fi
 
-#%postun
-#echo "Cleaing ugly workaround (%{py_sitedir}/twisted/{words,xish})"
-#rm -f %{py_sitedir}/twisted/words
-#rm -f %{py_sitedir}/twisted/xish
+%postun
+%if %{with ugly}
+echo "Cleaning ugly workaround (%{py_sitedir}/twisted/{words,xish})"
+rm -f %{py_sitedir}/twisted/words
+rm -f %{py_sitedir}/twisted/xish
+%endif
 
 %files
 %defattr(644,root,root,755)
@@ -138,4 +142,3 @@ fi
 %dir %{_var}/lib/pyicqt
 %attr(754,root,root) /etc/rc.d/init.d/PyICQt
 %attr(640,root,jabber) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/jabber/PyICQt.xml
-%attr(755,root,root) %{_sbindir}/*.sh
