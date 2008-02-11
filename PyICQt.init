@@ -24,7 +24,7 @@ start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/PyICQt ]; then
 		msg_starting "Jabber ICQ transport"
-		daemon /usr/sbin/pyicqt.sh /etc/jabber/PyICQt.xml
+		daemon python /usr/share/pyicqt/PyICQt.py -b -c /etc/jabber/PyICQt.xml
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/PyICQt
 	else
